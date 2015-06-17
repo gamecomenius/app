@@ -20,16 +20,22 @@ the right, we value the items on the left more.
 ## Server Config
 
 user: gamecomenius.com
+
 pass: game@comenius
+
 host: https://gamecomenius.com
 
 
 ## John Comenius.
+
 [Facebook](https://www.facebook.com/profile.php?id=100009506569098)
+
 user: contato@gamecomenius.com
+
 senha: game@comenius
 
 ## Prototype
+
 https://apps.facebook.com/gamecomenius/
 
 ## Bugs and Issues
