@@ -1,0 +1,1333 @@
+<html>
+    <head>
+        <title>Multitarefa</title>
+        <script type="text/javascript" src="script/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="script/jquery-resize.js"></script>
+
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+        <link href="multitarefa.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+        <script type="text/javascript">
+
+            (function ($)
+            {
+                $.fn.left = function (value)
+                {
+                    if (value != undefined)
+                    {
+                        this.css('left', value);
+                        return this;
+                    }
+                    else
+                        return parseInt(this.css('left').replace('px', ''));
+                };
+
+                $.fn.top = function (value)
+                {
+                    if (value != undefined)
+                    {
+                        this.css('top', value);
+                        return this;
+                    }
+                    else
+                        return parseInt(this.css('top').replace('px', ''));
+                };
+            }
+            (jQuery));
+
+        </script>
+
+        <script type="text/javascript">
+
+            var zoom = 1;
+
+            function initializeZoom()
+            {
+                var element = $('#game');
+
+                var center_x = ($(document).width() / 2);
+                var center_y = ($(document).height() / 2);
+
+                try {
+                    zoom = window.parent.document.getElementById("zoom").value;
+                }
+                catch (e) {
+                    console.log('zoom initialize error');
+                }
+
+                var w = element.width();
+                var h = element.height();
+                //var left = center_x + (w * (1-zoom))/2 - (w*zoom)/2;
+                //var top = center_y + (h * (1-zoom))/2 - (h*zoom)/2;
+
+                var left = center_x - w / 2;
+                var top = center_y - h / 2;
+
+                element.css(
+                        {
+                            "transform": "scale(" + zoom + ")",
+                            "-ms-transform": "scale(" + zoom + ")",
+                            "-moz-transform": "scale(" + zoom + ")",
+                            "-o-transform": "scale(" + zoom + ")",
+                            "-webkit-transform": "scale(" + zoom + ")",
+                            "left": (left + 'px'),
+                            "top": (top + "px")
+                        });
+            }
+        </script>
+
+        <script type="text/javascript">
+
+            var BackgroundUtil = {};
+
+            BackgroundUtil.SetBackgroundImage = function (element, sourceName)
+            {
+                //console.log(sourceName+' -> '+B64Assets[sourceName])
+                //console.log('SetBackgroundImage -> '+sourceName);
+                //$(element).css('background-image', 'url(\''+ 'assets/'+sourceName+'.png' +'\')');
+                $(element).css('background-image', 'url(\'' + 'data:image/png;base64,' + B64Assets[sourceName] + '\')');
+                $(element).css('background-size', '100% 100%');
+            }
+
+        </script>
+
+        <script type="text/javascript">
+
+            var body;
+
+            var gameContainer;
+
+            var game1;
+
+            var game2;
+
+            var game3;
+
+            var game4;
+
+
+            var expressionDisplay;
+
+            var oddOrEven;
+            var mathOperationsDisplay;
+            var btOdd;
+            var btEven;
+
+            var balls;
+            var ballTracks;
+            var ballBackground;
+            var mainBall;
+
+            var tableCells;
+            var tableCellClickCallback;
+
+            var bugs;
+
+            var levelDifficulty;
+
+            var _levels =
+                    [
+                        {timeout: 12000, operators: ['+'], numOperations: 1, minValue: 1, maxValue: 9, ballSpeed: 0.33, ballDensity: 5, bugSpeed: 0.25, bugDensity: 2, bugAngles: [0, 180], tableSize: [2, 2], tableShowTime: 1000, tableTimeout: 10000},
+                        {timeout: 10000, operators: ['+', '-'], numOperations: 1, minValue: 10, maxValue: 99, ballSpeed: 0.66, ballDensity: 7, bugSpeed: 0.50, bugDensity: 3, bugAngles: [0, 180, 90, 270], tableSize: [3, 3], tableShowTime: 750, tableTimeout: 7000},
+                        {timeout: 8000, operators: ['+', '-'], numOperations: 2, minValue: 10, maxValue: 99, ballSpeed: 0.99, ballDensity: 9, bugSpeed: 0.75, bugDensity: 4, bugAngles: [0, 180, 90, 270, 45, 135, 225, 315], tableSize: [4, 3], tableShowTime: 500, tableTimeout: 5000},
+                    ]
+
+            var level;
+
+            var expressionTimeout;
+            var expressionShowTime;
+
+            var showingExpression;
+
+            var ticksPerSecond = 20;
+
+            var stats = {};
+
+            function createLoadingWheel()
+            {
+                var wheel = $('<div></div>');
+                wheel.css(
+                        {
+                            'position': 'absolute',
+                            'width': '85px',
+                            'height': '85px',
+                            'top': '0px',
+                            'left': '0px',
+                            'background-image': 'url(\'loading_wheel.png\')',
+                            'background-position-x': '0',
+                        });
+
+                wheel.label = $('<div></div>');
+                wheel.label.css(
+                        {
+                            'position': 'absolute',
+                            'width': '85px',
+                            'height': '20px',
+                            'top': '24px',
+                            'left': '0px',
+                            'font-size': '24px',
+                            'text-align': 'center',
+                            'color': '#959593',
+                        });
+                wheel.append(wheel.label);
+
+                wheel.countdown = false;
+                wheel.play = function (seconds, callback)
+                {
+                    var counter = 0;
+                    wheel._interval = setInterval(function ()
+                    {
+                        var progress = counter / seconds;
+                        progress = Math.min(Math.max(0, progress), 1);
+                        //if(!wheel.countdown) progress = 1 - progress;
+                        var frame = Math.floor(progress * 18);
+                        wheel.css('background-position-x', (-1 * frame * 85) + 'px');
+                        var text = ((!wheel.countdown) ? (seconds - counter) : counter) + '';
+                        wheel.label.text(text);
+                        if (counter == seconds)
+                        {
+                            wheel.label.text('');
+                            wheel.stop();
+                            if (callback)
+                                callback();
+                        }
+                        counter++;
+                    }, 1000);
+                }
+                wheel.stop = function ()
+                {
+                    if (wheel._interval)
+                        clearInterval(wheel._interval);
+                }
+                return wheel;
+            }
+
+            $(function ()
+            {
+                body = $('body');
+
+                gameContainer = $('#game');
+                gameContainer.css('display', 'none');
+
+                game1 = $('#game1');
+
+                game2 = $('#game2');
+
+                game3 = $('#game3');
+
+                game4 = $('#game4');
+
+                //showHelpScreen();
+
+                var gameHelp = $('#game-help');
+                gameHelp.remove();
+                var gameDifficulty = $('#game-difficulty');
+                gameDifficulty.remove();
+
+               // initializeZoom();
+
+                initializeGame(1);
+                showGame();
+            });
+
+            function showHelpScreen()
+            {
+                var gameHelp = $('#game-help');
+                BackgroundUtil.SetBackgroundImage(gameHelp, 'help_background');
+                //gameHelp.css('background-image','url("assets/help_background.png")');
+
+                var btPlay = $('<div></div>');
+                btPlay.css('position', 'absolute');
+                btPlay.attr('id', 'btPlay');
+                btPlay.css('cursor', 'pointer');
+                btPlay.left(50);
+                btPlay.top(250);
+                btPlay.width(138);
+                btPlay.height(41);
+                gameHelp.append(btPlay);
+                BackgroundUtil.SetBackgroundImage(btPlay, 'play');
+                //btPlay.css('background-image','url("assets/play.png")');
+
+                var btPlayClicked = false;
+                btPlay.on('mouseup', function ()
+                {
+                    if (btPlayClicked)
+                        return;
+                    btPlayClicked = true;
+
+                    showDifficultyScreen();
+                    gameHelp.animate({opacity: 0}, 500, function () {
+                        gameHelp.remove();
+                    });
+                });
+            }
+
+            function showDifficultyScreen()
+            {
+                var gameDifficulty = $('#game-difficulty');
+                BackgroundUtil.SetBackgroundImage(gameDifficulty, 'difficulty_background');
+                //gameDifficulty.css('background-image','url("assets/difficulty_background.png")');
+
+                var btEasy = $('<div></div>');
+                btEasy.css('position', 'absolute');
+                btEasy.attr('id', 'btEasy');
+                btEasy.css('cursor', 'pointer');
+                btEasy.left(50);
+                btEasy.top(40);
+                btEasy.width(150);
+                btEasy.height(43);
+                gameDifficulty.append(btEasy);
+                //btEasy.css('background-image','url("assets/easy.png")');
+                BackgroundUtil.SetBackgroundImage(btEasy, 'easy');
+
+                var btDifficultyClicked = false;
+                btEasy.on('mouseup', function ()
+                {
+                    if (btDifficultyClicked)
+                        return;
+                    btDifficultyClicked = true;
+
+                    playLevelId(0);
+                    gameDifficulty.animate({opacity: 0}, 500, function () {
+                        gameDifficulty.remove();
+                    });
+                });
+
+                var btMedium = $('<div></div>');
+                btMedium.css('position', 'absolute');
+                btMedium.attr('id', 'btMedium');
+                btMedium.css('cursor', 'pointer');
+                btMedium.left(200);
+                btMedium.top(40);
+                btMedium.width(150);
+                btMedium.height(43);
+                gameDifficulty.append(btMedium);
+                //btMedium.css('background-image','url("assets/medium.png")');
+                BackgroundUtil.SetBackgroundImage(btMedium, 'medium');
+
+                var btDifficultyClicked = false;
+                btMedium.on('mouseup', function ()
+                {
+                    if (btDifficultyClicked)
+                        return;
+                    btDifficultyClicked = true;
+
+                    playLevelId(1);
+                    gameDifficulty.animate({opacity: 0}, 500, function () {
+                        gameDifficulty.remove();
+                    });
+                });
+
+                var btHard = $('<div></div>');
+                btHard.css('position', 'absolute');
+                btHard.attr('id', 'btHard');
+                btHard.css('cursor', 'pointer');
+                btHard.left(350);
+                btHard.top(40);
+                btHard.width(150);
+                btHard.height(43);
+                gameDifficulty.append(btHard);
+                //btHard.css('background-image','url("assets/hard.png")');
+                BackgroundUtil.SetBackgroundImage(btHard, 'hard');
+
+                var btDifficultyClicked = false;
+                btHard.on('mouseup', function ()
+                {
+                    if (btDifficultyClicked)
+                        return;
+                    btDifficultyClicked = true;
+
+                    playLevelId(2);
+                    gameDifficulty.animate({opacity: 0}, 500, function () {
+                        gameDifficulty.remove();
+                    });
+                });
+            }
+
+            function playLevelId(difficulty)
+            {
+                levelDifficulty = difficulty;
+
+                initializeGame(levelDifficulty);
+                showGame();
+            }
+
+            function showGame()
+            {
+                gameContainer.css('display', '');
+                gameContainer.css('opacity', 0);
+
+                setTimeout(function ()
+                {
+                    gameContainer.animate({opacity: 1}, 500);
+                }, 250);
+            }
+
+            var _runningTime;
+            var _isRunning;
+            var _lastTimerTick;
+            var _timer;
+
+            function initializeGame(levelId)
+            {
+                color = null;
+                level = null;
+
+
+
+                initializeLevel(levelId);
+                initializeUI();
+
+                bugs = [];
+
+                balls = [];
+                ballTracks = [];
+
+                stats =
+                        {
+                            initializedTime: new Date().getTime(),
+                            totalPieces: 0,
+                            ballsLog: [],
+                            bugsLog: [],
+                            oddOrEvenClickLog: [],
+                            cellsClickLog: [],
+                            log:
+                                    {
+                                        acuracia: 0,
+                                        velocidade: 0,
+                                        estabilidade: 0
+                                    }
+                        }
+
+                _numMoves = 0;
+                _runningTime = 0;
+                _lastTimerTick = -1;
+                _isRunning = true;
+                _timer = setInterval(onTimerTick, Math.floor(1000 / ticksPerSecond));
+
+                setNumMoves(_numMoves);
+                setRunningTime(_runningTime);
+
+                //startGame1();
+                game1.loadingWheel.play(5, startGame1);
+                setTimeout(function () {
+                    game2.loadingWheel.play(5, startGame2);
+                }, 30000);
+                setTimeout(function () {
+                    game3.loadingWheel.play(5, startGame3);
+                }, 60000);
+                setTimeout(function () {
+                    game4.loadingWheel.play(5, startGame4);
+                }, 90000);
+
+                function startGame1() {
+                    game1.cover.animate({opacity: 0}, 500, showBalls);
+                }
+                function startGame2() {
+                    game2.cover.animate({opacity: 0}, 500, showBugs);
+                }
+                function startGame3() {
+                    game3.cover.animate({opacity: 0}, 500, showExpression);
+                }
+                function startGame4() {
+                    game4.cover.animate({opacity: 0}, 500, showTableCell);
+                }
+            }
+
+            function initializeUI()
+            {
+                var buttonWidth = 81;
+                var buttonHeight = 32;
+
+                btOdd = $('<div></div>');
+                btOdd.css(
+                        {
+                            'position': 'absolute',
+                            'width': (buttonWidth + 'px'),
+                            'height': (buttonHeight + 'px'),
+                            'left': (30 + 'px'),
+                            'top': (182 + 'px'),
+                            'cursor': 'pointer',
+                            'background-color': '#3D98C1',
+                            'border-radius': '6px',
+                        });
+                btOdd.data('value', 'odd');
+                btOdd.click(onBtOddEvenClick);
+                btOdd.css('display', 'none');
+                btOdd.label = $('<div></div>');
+                btOdd.label.css(
+                        {
+                            'position': 'absolute',
+                            'top': '2px',
+                            'width': (buttonWidth + 'px'),
+                            'text-align': 'center',
+                            'color': '#fff',
+                            'font-size': '20px',
+                            'font-weight': 'bold',
+                        });
+                btOdd.label.text('Par');
+                btOdd.append(btOdd.label);
+                game3.append(btOdd);
+
+
+                btEven = $('<div></div>');
+                btEven.css(
+                        {
+                            'position': 'absolute',
+                            'width': (buttonWidth + 'px'),
+                            'height': (buttonHeight + 'px'),
+                            'left': (140 + 'px'),
+                            'top': (182 + 'px'),
+                            'cursor': 'pointer',
+                            'background-color': '#3D98C1',
+                            'border-radius': '6px',
+                        });
+                btEven.data('value', 'even');
+                btEven.click(onBtOddEvenClick);
+                btEven.css('display', 'none');
+                btEven.label = $('<div></div>');
+                btEven.label.css(
+                        {
+                            'position': 'absolute',
+                            'top': '2px',
+                            'width': (buttonWidth + 'px'),
+                            'text-align': 'center',
+                            'color': '#fff',
+                            'font-size': '20px',
+                            'font-weight': 'bold',
+                        });
+                btEven.label.text('Impar');
+                btEven.append(btEven.label);
+                game3.append(btEven);
+
+
+
+
+                expressionDisplay = $('<div></div>');
+                expressionDisplay.css('position', 'absolute');
+                expressionDisplay.css('display', 'none');
+                expressionDisplay.css('width', '100%');
+                expressionDisplay.css('height', 46 + 'px');
+                expressionDisplay.css('top', (84) + 'px');
+                expressionDisplay.css('text-align', 'center');
+                expressionDisplay.css('font-size', '34px');
+                expressionDisplay.css('font-weight', 'bold');
+                expressionDisplay.css('color', '#264855');
+
+                game3.append(expressionDisplay);
+
+
+
+
+                // tableSize tableShowTime tableTimeout
+                tableCells = [];
+
+                var tableWidth = 251;
+                var tableHeight = 226;
+                var cellSpacing = 10;
+
+                var numRows = level.tableSize[0];
+                var numColumns = level.tableSize[1];
+
+                var cellWidth = (tableWidth - numColumns * cellSpacing) / numColumns;
+                var cellHeight = (tableHeight - numRows * cellSpacing) / numRows;
+
+                for (var i = 0; i < numRows; i++)
+                {
+                    tableCells.push([]);
+                    for (var j = 0; j < numColumns; j++)
+                    {
+                        var cell = $('<div style="position:absolute"></div>');
+                        cell.css('background-color', '#264855');
+                        cell.width(cellWidth);
+                        cell.height(cellHeight);
+                        cell.css('left', (cellSpacing / 2 + j * (cellWidth + cellSpacing)));
+                        cell.css('top', (cellSpacing / 2 + i * (cellHeight + cellSpacing)));
+                        game4.append(cell);
+                        tableCells[i].push(cell);
+                        cell.row = i;
+                        cell.column = j;
+                        function setCellClick(cell)
+                        {
+                            console.log(i + ', ' + j);
+                            cell.click(function ()
+                            {
+                                if (tableCellClickCallback)
+                                    tableCellClickCallback(cell);
+                            });
+                        }
+                        setCellClick(cell);
+                    }
+                }
+
+
+                game1.cover = $('<div style="position:absolute;width:100%;height:100%;background-color:#dbdbdb;z-index:999">');
+                game1.loadingWheel = createLoadingWheel();
+                game1.loadingWheel.css({'top': '71px', 'left': '83px'});
+                game1.cover.append(game1.loadingWheel);
+                game1.append(game1.cover);
+
+                game2.cover = $('<div style="position:absolute;width:100%;height:100%;background-color:#dbdbdb;z-index:999">');
+                game2.loadingWheel = createLoadingWheel();
+                game2.loadingWheel.css({'top': '71px', 'left': '83px'});
+                game2.cover.append(game2.loadingWheel);
+                game2.append(game2.cover);
+
+                game3.cover = $('<div style="position:absolute;width:100%;height:100%;background-color:#dbdbdb;z-index:999">');
+                game3.loadingWheel = createLoadingWheel();
+                game3.loadingWheel.css({'top': '71px', 'left': '83px'});
+                game3.cover.append(game3.loadingWheel);
+                game3.append(game3.cover);
+
+                game4.cover = $('<div style="position:absolute;width:100%;height:100%;background-color:#dbdbdb;z-index:999">');
+                game4.loadingWheel = createLoadingWheel();
+                game4.loadingWheel.css({'top': '71px', 'left': '83px'});
+                game4.cover.append(game4.loadingWheel);
+                game4.append(game4.cover);
+            }
+
+            function initializeLevel(levelId)
+            {
+                level = _levels[levelId];
+            }
+
+
+
+            function showExpression()
+            {
+                game3.started = true;
+                game3.cover.remove();
+
+                if (level.swapButtons)
+                {
+                    var buttonLefts = [];
+                    if (Math.random() > 0.5)
+                    {
+                        var l0 = btOdd.css('left');
+                        var l1 = btEven.css('left');
+                        btOdd.css('left', l1);
+                        btEven.css('left', l0);
+                    }
+                }
+
+                var lastOddOrEven = oddOrEven;
+
+                var expression = '';
+
+                var minValue = level.minValue || 1;
+                var maxValue = level.maxValue || 99;
+                var operators = level.operators || ['+'];
+
+                for (var i = 0; i < level.numOperations; i++)
+                {
+                    var term;
+                    if (i == 0)
+                    {
+                        term = Math.floor(minValue + (Math.random() * (maxValue - minValue)));
+                        expression += term;
+                    }
+                    var op = Math.floor(Math.random() * operators.length);
+                    term = operators[op];
+                    expression += ' ' + term;
+
+                    term = Math.floor(minValue + (Math.random() * (maxValue - minValue)));
+                    expression += ' ' + term;
+                }
+
+                var expressionResult = eval(expression);
+                oddOrEven = (expressionResult % 2 == 0) ? 'odd' : 'even';
+
+                expressionDisplay.text(expression);
+
+                expressionDisplay.css('display', 'block');
+                btOdd.css('display', 'block');
+                btEven.css('display', 'block');
+                showingExpression = true;
+
+                expressionShowTime = _runningTime;
+
+                expressionTimeout = setTimeout(function ()
+                {
+                    hideExpression();
+                }, level.timeout);
+            }
+
+            function hideExpression()
+            {
+                if (expressionTimeout)
+                {
+                    clearTimeout(expressionTimeout);
+                    expressionTimeout = 0;
+                }
+
+                showingExpression = false;
+
+                btOdd.css('display', 'none');
+                btEven.css('display', 'none');
+
+                setTimeout(function ()
+                {
+                    expressionDisplay.css('display', 'none');
+                    setTimeout(showExpression, 1000);
+                }, 1000);
+            }
+
+            function showBugs()
+            {
+                game2.started = true;
+                game2.cover.remove();
+
+                for (var i = 0; i < level.bugDensity; i++)
+                {
+                    var bug = createBug();
+                    game2.append(bug);
+                    bug.reset();
+                }
+
+                function createBug()
+                {
+                    var bug = $('<canvas style="position:absolute;"></canvas>');
+                    bug[0].width = 40;
+                    bug[0].height = 26;
+                    var context = bug[0].getContext('2d');
+
+                    context.beginPath();
+
+                    context.moveTo(2, 2);
+                    context.lineTo(38, 13);
+                    context.lineTo(2, 24);
+                    context.lineTo(2, 2);
+
+                    context.closePath();
+
+                    context.fillStyle = '#264855';
+                    context.fill();
+
+                    bugs.push(bug);
+
+
+                    bug.angle = function (value)
+                    {
+                        if (value == undefined)
+                            return bug._angle;
+
+                        bug._angle = value;
+                        bug.css('-ms-transform', 'rotate(' + bug._angle + 'deg)');
+                        bug.css('-webkit-transform', 'rotate(' + bug._angle + 'deg)');
+                        bug.css('transform', 'rotate(' + bug._angle + 'deg)');
+                    }
+
+                    var offsetX = 20;
+                    bug.x = function (value)
+                    {
+                        if (value == undefined)
+                            return parseInt(bug.css('left').replace('px', '')) + offsetX;
+
+                        bug.css('left', (value - offsetX) + 'px');
+                    }
+
+                    var offsetY = 13;
+                    bug.y = function (value)
+                    {
+                        if (value == undefined)
+                            return parseInt(bug.css('top').replace('px', '')) + offsetY;
+
+                        bug.css('top', (value - offsetY) + 'px');
+                    }
+
+                    bug.mousedown(function ()
+                    {
+                        bug.css('display', 'none');
+                        bug.enabled = false;
+
+                        bug.logData.clickTime = (_runningTime - bug.logData.time);
+
+                        setTimeout(bug.reset, Math.random() * 2000);
+                    })
+
+                    bug.reset = function ()
+                    {
+                        var angle = level.bugAngles[Math.floor(Math.random() * level.bugAngles.length)];
+
+                        bug.angle(angle);
+
+                        var maxPoint = {x: 251, y: 226};
+
+                        if (angle == 0 || angle == 180)
+                        {
+                            var _y = Math.random() * maxPoint.y;
+                            _y = Math.min(Math.max(offsetY, _y), maxPoint.y - offsetY);
+                            bug.y(_y);
+                            bug.x(angle == 0 ? 0 : maxPoint.x);
+                        }
+                        else if (angle == 90 || angle == 270)
+                        {
+                            var _x = Math.random() * maxPoint.x;
+                            _x = Math.min(Math.max(offsetX, _x), maxPoint.x - offsetX);
+                            bug.x(_x);
+                            bug.y(angle == 90 ? 0 : maxPoint.y);
+                        }
+                        else if (angle == 45)
+                        {
+                            _x = (Math.random() * maxPoint.x / 2);
+                            _x = Math.min(Math.max(offsetX, _x), maxPoint.x - offsetX);
+                            bug.x(_x);
+                            bug.y(0);
+                        }
+                        else if (angle == 135)
+                        {
+                            _x = ((maxPoint.x / 2) + (Math.random() * maxPoint.x / 2));
+                            _x = Math.min(Math.max(offsetX, _x), maxPoint.x - offsetX);
+                            bug.x(_x);
+                            bug.y(0);
+                        }
+                        else if (angle == 225)
+                        {
+                            _x = ((maxPoint.x / 2) + (Math.random() * maxPoint.x / 2));
+                            _x = Math.min(Math.max(offsetX, _x), maxPoint.x - offsetX);
+                            bug.x(_x);
+                            bug.y(maxPoint.y);
+                        }
+                        else if (angle == 315)
+                        {
+                            _x = (Math.random() * maxPoint.x / 2);
+                            _x = Math.min(Math.max(offsetX, _x), maxPoint.x - offsetX);
+                            bug.x(_x);
+                            bug.y(maxPoint.y);
+                        }
+
+                        bug.css('display', 'block');
+                        bug.enabled = true;
+
+                        bug.logData = {time: _runningTime, clickTime: -1};
+                        stats.bugsLog.push(bug.logData);
+                    }
+
+                    return bug;
+                }
+            }
+
+            function updateBugs(dt)
+            {
+                var maxPoint = {x: 527, y: 342};
+
+                for (var i = 0; i < bugs.length; i++)
+                {
+                    var bug = bugs[i];
+
+                    if (!bug.enabled)
+                        continue;
+
+                    var bugX = bug.x();
+                    var bugY = bug.y();
+                    var bugAngle = bug.angle() * Math.PI / 180;
+                    bugX = bugX + (level.bugSpeed * 5) * Math.cos(bugAngle);
+                    bugY = bugY + (level.bugSpeed * 5) * Math.sin(bugAngle);
+                    bug.x(bugX);
+                    bug.y(bugY);
+
+                    if (bugX > maxPoint.x + 45 || bugX < -45 || bugY > maxPoint.y + 45 || bugY < -45)
+                        bug.reset();
+                }
+            }
+
+            function showBalls()
+            {
+                game1.started = true;
+                game1.cover.remove();
+
+                var nextBallTrack = 0;
+
+                var numTracks = 5;
+                var trackWidth = 251 / 5;
+
+                ballBackground = $('<canvas style="position:absolute;"></canvas>');
+                ballBackground[0].width = 251;
+                ballBackground[0].height = 282;
+                var context = ballBackground[0].getContext('2d');
+                context.strokeStyle = '#e0cd06';
+                // dashed
+
+                for (var i = 0; i < (numTracks - 1); i++)
+                {
+                    var x = (i + 1) * trackWidth;
+                    var n = 8;
+                    var step = 282 / n;
+                    for (var j = 0; j < n; j++)
+                    {
+                        var y0 = j * step;
+                        var y1 = j * step + step / 2;
+                        context.moveTo(x, y0);
+                        context.lineTo(x, y1);
+                    }
+                }
+
+                ballTracks = [];
+                for (var i = 0; i < (numTracks); i++)
+                {
+                    var trackX = (i * trackWidth + trackWidth / 2);
+                    ballTracks.push(trackX);
+                }
+
+                context.stroke();
+
+                game1.append(ballBackground);
+
+
+
+                var minY = -140;//aqui
+                ballBackground.y = function (value)
+                {
+                    if (value == undefined)
+                        return parseInt(ballBackground.css('top').replace('px', ''));
+
+                    ballBackground.css('top', value + 'px');
+                }
+
+                ballBackground.y(minY);
+
+
+                mainBall = createMainBall();
+                game1.append(mainBall);
+
+                mainBall.track = Math.floor(ballTracks.length / 2);
+                var ballX = ballTracks[mainBall.track];
+                var ballY = 205;
+                mainBall.x(ballX);
+                mainBall.y(ballY);
+
+                body.keydown(onBodyKeyDown);
+
+
+
+                for (var i = 0; i < level.ballDensity; i++)
+                {
+                    var ball = createBall();
+                    game1.append(ball);
+                    ball.reset();
+                    var ballY = ball.y();
+                    ballY += -100 + (Math.random() * 200);
+                    ball.y(ballY);
+                }
+
+
+
+                function onBodyKeyDown(e)
+                {
+                    if (mainBall.isTurning)
+                        return;
+
+                    var deltaTrack = 0;
+
+                    if (e.keyCode == 39) // RIGHT
+                    {
+                        if (mainBall.track + 1 >= ballTracks.length)
+                            return;
+
+                        deltaTrack = 1;
+                    }
+                    if (e.keyCode == 37) // LEFT
+                    {
+                        if (mainBall.track - 1 < 0)
+                            return;
+
+                        deltaTrack = -1;
+                    }
+
+                    if (deltaTrack != 0)
+                    {
+                        var xObj = {x: mainBall.x()};
+
+                        mainBall.track += deltaTrack;
+                        mainBall.isTurning = true;
+
+                        $(xObj).animate({x: ballTracks[mainBall.track]}, {duration: 200, step: function (x) {
+                                mainBall.x(x);
+                            }, complete: function () {
+                                mainBall.isTurning = false;
+                            }});
+                    }
+                }
+
+                function createBall()
+                {
+                    var ball = $('<div class="ball"></div>');
+                    ball.css('width', '16px');
+                    ball.css('height', '16px');
+                    ball.css('background-color', '#264855');
+                    ball.css('border-radius', '10px');
+                    balls.push(ball);
+
+                    var offsetX = 8;
+                    ball.x = function (value)
+                    {
+                        if (value == undefined)
+                            return parseInt(ball.css('left').replace('px', '')) + offsetX;
+
+                        ball.css('left', (value - offsetX) + 'px');
+                    }
+
+                    var offsetY = 8;
+                    ball.y = function (value)
+                    {
+                        if (value == undefined)
+                            return parseInt(ball.css('top').replace('px', '')) + offsetY;
+
+                        ball.css('top', (value - offsetY) + 'px');
+                    }
+
+                    ball.reset = function ()
+                    {
+                        var track = nextBallTrack;
+                        nextBallTrack = (nextBallTrack + 1) % ballTracks.length;
+
+                        var ballX = ballTracks[track];
+                        ball.x(ballX);
+
+                        var ballY = (Math.random() > 0.5) ? -20 : -150;
+                        ball.y(ballY);
+                        ball.css('opacity', '');
+
+                        setTimeout(function ()
+                        {
+                            ball.enabled = true;
+
+                            ball.logData = {time: _runningTime, hitTime: -1};
+                            stats.ballsLog.push(ball.logData);
+
+                        }, 100 + Math.random() * 200);
+                    }
+
+                    return ball;
+                }
+
+                function createMainBall()
+                {
+                    var ball = $('<div class="ball"></div>');
+                    ball.css('width', '26px');
+                    ball.css('height', '26px');
+                    ball.css('background-color', '#8674B0');
+                    ball.css('border-radius', '4px');
+                    ball.isTurning = false;
+
+                    mainBall = ball;
+
+                    var offsetX = 13;
+                    ball.x = function (value)
+                    {
+                        if (value == undefined)
+                            return parseInt(ball.css('left').replace('px', '')) + offsetX;
+
+                        ball.css('left', (value - offsetX) + 'px');
+                    }
+
+                    var offsetY = 13;
+                    ball.y = function (value)
+                    {
+                        if (value == undefined)
+                            return parseInt(ball.css('top').replace('px', '')) + offsetY;
+
+                        ball.css('top', (value - offsetY) + 'px');
+                    }
+
+                    return ball;
+                }
+            }
+
+            function updateBalls(dt)
+            {
+                var minY = -105;
+                var backY = ballBackground.y();
+
+                backY += 10;
+                if (backY > 0)
+                    backY += minY;
+                ballBackground.y(backY);
+
+                for (var i = 0; i < balls.length; i++)
+                {
+                    var ball = balls[i];
+
+                    if (!ball.enabled)
+                        continue;
+
+                    var ballY = ball.y();
+                    ballY += (level.ballSpeed * 5);
+                    ball.y(ballY);
+
+                    if (hitMainBall(ball))
+                    {
+                        ball.css('opacity', '0.5');
+                        ball.logData.hitTime = (_runningTime - ball.logData.time);
+                    }
+
+                    if (ballY > 400)
+                    {
+                        ball.enabled = false;
+                        ball.reset();
+                    }
+                }
+
+                function hitMainBall(ball)
+                {
+                    var ballX = ball.x();
+                    var ballY = ball.y();
+
+                    var mainBallX = mainBall.x();
+                    var mainBallY = mainBall.y();
+
+                    var offsetX = 10;
+                    var offsetY = 10;
+
+                    var hitX = Math.abs(ballX - mainBallX) < 2 * offsetX;
+                    var hitY = Math.abs(ballY - mainBallY) < 2 * offsetY;
+
+                    return hitX && hitY;
+                }
+            }
+
+            function showTableCell()
+            {
+                game4.started = true;
+                game4.cover.remove();
+
+                var numRows = tableCells.length;
+                var numColumns = tableCells[0].length;
+
+                var clickEnabled = false;
+                var expectedCell = null;
+
+                var tableTimeout;
+
+
+                reset();
+
+
+                tableCellClickCallback = onCellClick;
+                function onCellClick(cell)
+                {
+                    if (!clickEnabled)
+                        return;
+
+                    var hit = (cell == expectedCell);
+
+                    game4.logData.clickTime = (_runningTime - game4.logData.time);
+                    game4.logData.hit = hit;
+
+                    console.log(stats.cellsClickLog)
+
+                    cell.css('background-color', hit ? '#86AC63' : '#D64343');
+                    setTimeout(function () {
+                        cell.css('background-color', '#264855');
+                    }, 500);
+
+                    if (tableTimeout)
+                        clearTimeout(tableTimeout);
+
+                    setTimeout(reset, 1000);
+                }
+
+                function reset()
+                {
+                    clickEnabled = false;
+                    /*
+                     for(var i = 0; i < numRows; i++)
+                     {
+                     for(var j = 0; j < numColumns; j++)
+                     tableCells[i][j].css('background-color', '#264855');
+                     }
+                     */
+                    var row = Math.floor(Math.random() * numRows);
+                    var column = Math.floor(Math.random() * numColumns);
+
+                    var cell = tableCells[row][column];
+
+                    cell.css('background-color', '#fff');
+
+                    setTimeout(function ()
+                    {
+                        expectedCell = cell;
+                        clickEnabled = true;
+                        cell.css('background-color', '#264855');
+                        tableTimeout = setTimeout(onTableTimeout, level.tableTimeout);
+
+                        game4.logData = {time: _runningTime, clickTime: -1};
+                        stats.cellsClickLog.push(game4.logData);
+
+                    }, level.tableShowTime);
+                }
+
+                function onTableTimeout()
+                {
+                    clickEnabled = false;
+                    setTimeout(reset, 1000);
+                }
+
+
+            }
+
+            function onBtOddEvenClick(e)
+            {
+                if (!showingExpression)
+                    return;
+
+                var button = $(this);
+
+                var buttonValue = button.data('value');
+                var oddOrEvenTime = (_runningTime - expressionShowTime);
+
+                var hit = (buttonValue == oddOrEven);
+
+                stats.oddOrEvenClickLog.push({time: _runningTime, hit: hit, clickTime: oddOrEvenTime, expected: oddOrEven, value: buttonValue});
+
+                hideExpression();
+            }
+
+            function onTimerTick()
+            {
+                var currentTimerTick = new Date().getTime();
+
+                if (_lastTimerTick > -1)
+                {
+                    if (_isRunning)
+                    {
+                        var dt = currentTimerTick - _lastTimerTick;
+                        _runningTime += dt;
+                        updateGame(dt);
+                    }
+                }
+                _lastTimerTick = currentTimerTick;
+            }
+
+            function updateGame(dt)
+            {
+                if (game2.started)
+                    updateBugs(dt);
+                if (game1.started)
+                    updateBalls(dt);
+
+                setRunningTime(_runningTime);
+            }
+
+            function setRunningTime(value)
+            {
+                var timeText = '';
+
+                var millis = value % 1000;
+                var seconds = Math.floor(value / 1000);
+                var minutes = Math.floor(seconds / 60);
+                var hours = Math.floor(minutes / 60);
+
+                minutes -= hours * 60;
+                seconds -= minutes * 60;
+
+                if (hours > 0)
+                {
+                    hours = hours + '';
+                    minutes = minutes + '';
+                    seconds = seconds + '';
+                    while (hours.length < 1)
+                        hours = '0' + hours;
+                    while (minutes.length < 2)
+                        minutes = '0' + minutes;
+                    while (seconds.length < 2)
+                        seconds = '0' + seconds;
+                    timeText = hours + ':' + minutes + ':' + seconds;
+                }
+                else if (minutes > 0)
+                {
+                    minutes = minutes + '';
+                    seconds = seconds + '';
+                    millis = millis + '';
+                    while (minutes.length < 1)
+                        minutes = '0' + minutes;
+                    while (seconds.length < 2)
+                        seconds = '0' + seconds;
+                    while (millis.length < 1)
+                        millis = '0' + millis;
+                    millis = millis.substring(0, 1);
+                    timeText = minutes + ':' + seconds + '.' + millis;
+                }
+                else if (seconds > 9)
+                {
+                    seconds = seconds + '';
+                    millis = millis + '';
+                    while (seconds.length < 1)
+                        seconds = '0' + seconds;
+                    while (millis.length < 2)
+                        millis = '0' + millis;
+                    millis = millis.substring(0, 2);
+                    timeText = seconds + '.' + millis;
+                }
+                else
+                {
+                    seconds = seconds + '';
+                    millis = millis + '';
+                    while (seconds.length < 1)
+                        seconds = '0' + seconds;
+                    while (millis.length < 3)
+                        millis = '0' + millis;
+                    timeText = seconds + '.' + millis;
+                }
+
+                try {
+                    window.parent.setStat('runningTime', timeText);
+                }
+                catch (e) {
+                }
+
+            }
+
+            function setNumMoves(value)
+            {
+                try {
+                    window.parent.setStat('numMoves', value);
+                }
+                catch (e) {
+                }
+
+            }
+
+            function sendLog()
+            {
+                if (stats.log.time.toFixed)
+                    stats.log.time = stats.log.time.toFixed(2);
+
+                if (stats.log.acuracia.toFixed)
+                    stats.log.acuracia = stats.log.acuracia.toFixed(2);
+                if (stats.log.velocidade.toFixed)
+                    stats.log.velocidade = stats.log.velocidade.toFixed(2);
+                if (stats.log.estabilidade.toFixed)
+                    stats.log.estabilidade = stats.log.estabilidade.toFixed(2);
+
+                //console.log(stats.log);
+                try {
+                    window.parent.saveLogObject(stats.log);
+                }
+                catch (e) {
+                }
+            }
+
+        </script>
+
+        <div id="game">
+            <div id="game1">
+            </div>
+            <div id="game2">
+            </div>
+            <div id="game3">
+            </div>
+            <div id="game4">
+            </div>
+        </div>
+        <div id="game-help">
+        </div>
+        <div id="game-difficulty">
+        </div>
+
+        <script type="text/javascript" src="Assets"></script>
+
+
+    </body>
+</html>

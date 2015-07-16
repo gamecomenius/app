@@ -1,0 +1,77 @@
+ 
+/* 
+    Created on : Jul 14, 2015, 3:44:39 PM
+    Author     : diego
+*/
+
+
+    body, html
+    {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #fff;
+
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        font-family:'Open Sans', sans-serif;
+    }
+
+    .ball-background
+    {
+        position: absolute;
+        background-size: 100% 100%;
+        width: 527px;
+        height: 456px;
+        background-repeat: repeat-y;
+    }
+
+    .table-background
+    {
+        position: absolute;
+        background-color: #333;
+        width: 300px;
+        height: 300px;
+    }
+
+    .table-cell
+    {
+        position: absolute;
+        background-color: #666;
+        border: solid 1px #333;
+    }
+
+    #background3
+    {
+        position: absolute;
+        background-size: 100% 100%;
+        width: 527px;
+        height: 342px;
+    }
+
+    #background4
+    {
+        position: absolute;
+        background-size: 100% 100%;
+        width: 527px;
+        height: 342px;
+    }
+
+    #game { position: absolute; left: 0; top: 0; width:512px; height:462px; overflow:hidden; }
+
+    #game1 { position: absolute; left:0px; top:0px; width:251px; height:226px; overflow:hidden; background-color:#f9ed9b; }
+    #game2 { position: absolute; left:261px; top:0px; width:251px; height:226px; overflow:hidden; background-color:#D0CEEA; }
+    #game3 { position: absolute; left:0px; top:236px; width:251px; height:226px; overflow:hidden; background-color:#BBE1EA; }
+    #game4 { position: absolute; left:261px; top:236px; width:251px; height:226px; overflow:hidden; background-color:#F4BDBD; }
+
+    #game-help { z-index:10; position: absolute; left:0px; top:0px; width:527px; height:342px; overflow:hidden; }
+
+    #game-difficulty { z-index:9; position: absolute; left:0px; top:0px; width:527px; height:342px; overflow:hidden; }
+
+    .bug { position: absolute; background-size: 100% 100%; overflow:hidden; cursor:pointer; }
+    .ball { position: absolute; background-size: 100% 100%; overflow:hidden; }
