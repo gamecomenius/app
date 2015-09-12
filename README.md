@@ -18,10 +18,7 @@ That is, while there is value in the items on
 the right, we value the items on the left more.
 
 ## Server Config
-
-user: gamecomenius.com
-
-pass: game@comenius
+ 
 
 host: https://gamecomenius.com
 
@@ -29,10 +26,7 @@ host: https://gamecomenius.com
 ## John Comenius.
 
 [Facebook](https://www.facebook.com/profile.php?id=100009506569098)
-
-user: contato@gamecomenius.com
-
-senha: game@comenius
+ 
 
 ## Prototype
 
@@ -40,7 +34,7 @@ https://apps.facebook.com/gamecomenius/
 
 ## Bugs and Issues
 
-Have a bug or an issue with this theme? [Open a new issue](https://github.com/BioSCADA/comenius/issues).
+Have a bug or an issue with this theme? [Open a new issue](https://github.com/gamecomenius/issues).
   
 
 
