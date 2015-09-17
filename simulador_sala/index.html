@@ -1,0 +1,51 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Documento sem título</title>
+<!--<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>-->
+<script src="js/roomSim.js"></script>
+<script src="js/sala.js"></script>
+<script src="js/alunos.js"></script>
+<script src="js/professora.js"></script>
+<script src="js/HUD.js"></script>
+
+
+<!--<link href="css/arquitetura.css" rel="stylesheet" >-->
+</head>
+
+<body>
+	<div class="hidden">
+	<script type="text/javascript">
+			if (document.images) {
+				img = new Image();
+				img.src = "img/HUD/loro.png";
+				img = new Image();
+				img.src = "img/sala_12.png";
+				
+				img = new Image();
+				img.src = "img/mordecai_highlighted.png";
+				
+				for(i = 0; i < steps.length; i++){
+					img = new Image();
+					img.src = steps[i];
+				}
+				for(i = 0; i < objects.length; i++){
+					img = new Image();
+					img.src = objects[i];
+				}
+			}
+			if(document.audio){
+				for(i = 0; i < playlist.length; i++){
+					var audio = new Audio();
+					audio.src = playlist[i];	
+					audio.preload = "auto";
+					audio.play();
+				}
+			}
+	</script>
+</div>
+	<script src="js/core.js"></script>
+    
+</body>
+</html>

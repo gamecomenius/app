@@ -1,0 +1,14 @@
+@charset "utf-8";
+/* CSS Document */
+
+#Change{
+	position:absolute;
+	margin-top:300px;
+	margin-left:-600px;
+}
+
+#Change2{
+	position:absolute;
+	margin-top:200px;
+	margin-left:-600px;
+}
