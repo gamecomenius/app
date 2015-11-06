@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="game comenenius ufsc florianópolis jogos educativos cognisense tecnologia edumidia">
+        <meta name="author" content="Grupo Edumidia UFSC"> 
+        <title>Game Comenius</title>
+        <link href="../bower_components/pace/themes/yellow/pace-theme-minimal.css" rel="stylesheet" type="text/css"/>
+
+        <script src="../bower_components/pace/pace.min.js" type="text/javascript"></script>
+        <link href="../bower_components/toastr/toastr.css" rel="stylesheet" type="text/css"/>
+        <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
+
+        <!-- Bootstrap Core CSS -->
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/creative.css" rel="stylesheet" type="text/css"/>
+        <link href="../css/quiz.css" rel="stylesheet" type="text/css"/>
+    </head>
+
+    <body> 
+        <div id="lurdinha">
+            
+        </div>
+        <!-- Page Content -->
+        <div class="container-fluid">
+
+
+            <div class="row"> 
+                <div class="jumbotron hero-spacer col-md-12">
+                    <p id='question'></p>  
+                </div> 
+
+                <div id='questions' class="col-md-12"> 
+                    <ul class="row" id="answer"> 
+                    </ul>
+                </div> 
+
+                <hr>
+
+                <!-- Footer -->
+                <footer class="container">
+                    <div class="row">
+                        <div id='questions-number' class="pull-left">
+                            <p>Questão <span id='current-question'>1</span> de <span id="lenght-question"> </span> </p>
+                        </div>
+                        <div id='next' class="button btn btn-danger pull-right">
+                            Okay! Próxima questão
+                        </div>
+                    </div>
+                </footer>
+
+            </div>
+        </div>
+        <!-- /.container -->
+
+        <script src="../js/jquery.js"></script> 
+        <script src="../js/bootstrap.min.js"></script> 
+        <script src="../bower_components/toastr/toastr.min.js" type="text/javascript"></script>
+        <script src="../bower_components/moment/min/moment-with-locales.min.js" type="text/javascript"></script>
+        <script src="js/creative.js" type="text/javascript"></script>
+    </body>
+
+
+</html>

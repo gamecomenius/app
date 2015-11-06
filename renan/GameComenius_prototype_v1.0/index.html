@@ -1,0 +1,64 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Documento sem título</title>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="js/sala.js"></script>
+<script src="js/alunos.js"></script>
+<script src="js/midias.js"></script>
+<script src="js/professora.js"></script>
+<script src="js/HUD.js"></script>
+<script src="js/HUDsala.js"></script>
+<script src="js/background.js"></script>
+<script src="js/core.js"></script>
+<link href="css/arquitetura.css" rel="stylesheet" >
+<style>
+	.main{
+		display:block;
+	}
+</style>
+</head>
+
+<body>
+
+	<div class="hidden">
+		<script type="text/javascript">
+		
+				function preload() {
+					$(regularIcons).each(function(){
+						$('<img/>')[0].src = this;
+					});
+					
+					$(midias).each(function(){
+						$('<img/>')[0].src = this;
+					});
+					
+					$(pensamentos).each(function(){
+						$('<img/>')[0].src = this;
+					});
+					
+					$(corpos).each(function(){
+						$('<img/>')[0].src = this;
+					});
+					
+					$('<img/>')[0].src = "img/capa/capa.gif";
+					$('<img/>')[0].src = "img/agenda.jpg";
+					$('<img/>')[0].src = "img/sala_12.png";
+					$('<img/>')[0].src = "img/quarto/quarto.png";
+					$('<img/>')[0].src = "img/mapa/mapa.jpg";
+					$('<img/>')[0].src = "img/bar/barTheme.png";
+					$('<img/>')[0].src = "img/feedback/feedback.jpg";
+				}
+				preload();
+	
+        </script>
+    </div>
+
+
+	<div class="main" id="main" >
+        <script src="js/roomSim.js"></script>
+	</div>
+</body>
+</html>
+

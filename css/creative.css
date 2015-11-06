@@ -443,6 +443,8 @@ fieldset[disabled] .btn-primary.active {
     text-transform: uppercase;
     font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
     font-weight: 700;
+    /* height: 100%; */
+    /* width: 25%; */
 }
 
 .btn-xl {
