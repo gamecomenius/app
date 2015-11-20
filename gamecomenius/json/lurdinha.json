@@ -1,0 +1,18 @@
+[
+    {
+        "dialogo": "Olá! Sou a Lurdinha, o pai da Didática Geral e o direto fantasma desta Escola. Tem certeza que deseja continuar?",
+        "feedback1": "Muito bom, vamos em frente.",
+        "feedback2": "ow gosh",
+        "fase": 1,
+        "missao": "Missão Empenho",
+        "id": 0
+    },
+    {
+        "dialogo": "Ola sou A professora Lurdinha",
+        "feedback1": "pessimo, nao deu",
+        "feedback2": "opa, sim",
+        "fase": 2,
+        "missao": "Missão Jogo",
+        "id": 1
+    }
+]
