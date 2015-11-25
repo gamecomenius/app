@@ -174,7 +174,7 @@ function sendChallenge(to, message, callback, turn) {
 function sendBrag(caption, callback) {
     FB.ui({method: 'feed',
         caption: caption,
-        picture: 'http://www.gamecomenius.com/images/logo_large.jpg',
+        picture: 'https://www.gamecomenius.com/img/logo_large.jpg',
         name: 'Checkout my Game Comenius greatness!'
     }, callback);
 }

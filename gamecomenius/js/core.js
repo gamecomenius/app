@@ -7,34 +7,34 @@ var defaults = {
 
 var celebs = [{
         name: 'Einstein',
-        picture: 'images/celebs/einstein.png'
+        picture: 'img/celebs/einstein.png'
     }, {
         name: 'Xzibit',
-        picture: 'images/celebs/xzibit.png'
+        picture: 'img/celebs/xzibit.png'
     }, {
         name: 'Goldsmith',
-        picture: 'images/celebs/goldsmith.png'
+        picture: 'img/celebs/goldsmith.png'
     }, {
         name: 'Sinatra',
-        picture: 'images/celebs/sinatra.png'
+        picture: 'img/celebs/sinatra.png'
     }, {
         name: 'George',
-        picture: 'images/celebs/george.png'
+        picture: 'img/celebs/george.png'
     }, {
         name: 'Jacko',
-        picture: 'images/celebs/jacko.png'
+        picture: 'img/celebs/jacko.png'
     }, {
         name: 'Rick',
-        picture: 'images/celebs/rick.png'
+        picture: 'img/celebs/rick.png'
     }, {
         name: 'Keanu',
-        picture: 'images/celebs/keanu.png'
+        picture: 'img/celebs/keanu.png'
     }, {
         name: 'Arnie',
-        picture: 'images/celebs/arnie.png'
+        picture: 'img/celebs/arnie.png'
     }, {
         name: 'Jean-Luc',
-        picture: 'images/celebs/jeanluc.png'
+        picture: 'img/celebs/jeanluc.png'
     }];
 
 //RENAN

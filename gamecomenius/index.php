@@ -5,30 +5,30 @@
 
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-        <meta property="og:image" content="http://www.gamecomenius.com/images/logo_large.jpg"/>
+        <meta property="og:image" content="http://www.gamecomenius.com/img/logo_large.jpg"/>
         <link href="../bower_components/pace/themes/yellow/pace-theme-minimal.css" rel="stylesheet" type="text/css"/> 
         <script src="../bower_components/pace/pace.min.js" type="text/javascript"></script>
 
         <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
         <link href="../bower_components/toastr/toastr.css" rel="stylesheet" type="text/css"/>
-        
+
         <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
 
 
-        <link href="style/game.css" rel="stylesheet" type="text/css">
-        <link href="style/custom.css" rel="stylesheet" type="text/css"/>
-        <link href="style/feedbacks.css" rel="stylesheet" type="text/css"/>
-        
+        <link href="css/game.css" rel="stylesheet" type="text/css">
+        <link href="css/custom.css" rel="stylesheet" type="text/css"/>
+        <link href="css/feedbacks.css" rel="stylesheet" type="text/css"/>
+
         <script src="../bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script> 
         <script src="../bower_components/toastr/toastr.min.js" type="text/javascript"></script>
         <script src="../bower_components/moment/min/moment-with-locales.min.js" type="text/javascript"></script> 
         <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
         <script src="//connect.facebook.net/en_US/sdk.js"></script>
-        <script src="scripts/social.js"></script>
-        <script src="scripts/ui.js"></script>
-        <script src="scripts/game.js"></script>
-        <script src="scripts/core.js"></script>
+        <script src="js/social.js"></script>
+        <script src="js/ui.js"></script>
+        <script src="js/game.js"></script>
+        <script src="js/core.js"></script>
 
     <!--[if IE]><script src="scripts/excanvas.js"></script><![endif]-->
     </head>
@@ -36,7 +36,7 @@
     <body>
         <div id="fb-root"></div>
 
-        <header>
+        <header class="hidden">
             <div class="container">
                 <nav class="navbar navbar-default navbar-fixed-top">
                     <div class="container-fluid">
@@ -121,25 +121,6 @@
                                 </li>
                             </ul>
 
-                            <div class="menu-center " style="width: 100%;  ">
-                                <div class="nav navbar-text progress" style="width: 100px; margin-top:10px">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="70"
-                                         aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                                        70%
-                                    </div>
-                                </div>
-                                <div class="nav navbar-text " style="width: 24px; height: 24px; ">
-                                   
-                                    <img src="../img/assets/LURDINHA-HEAD.png" alt="" class="menu-image"  style="width: 100%; height: 100%; "/>
-                                </div>
-
-                                <div class="nav navbar-text progress" style="width: 100px; margin-top:10px">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="70"
-                                         aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                                        70%
-                                    </div>
-                                </div>
-                            </div>
 
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="dropdown">
@@ -213,24 +194,55 @@
                 </nav>
 
             </div>
+            <div class="menu-center">
+
+                <div class="menu-center-center ">
+                    <div class="nav navbar-text progress" style="width: 100px; margin-top:10px">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="70"
+                             aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                            70%
+                        </div>
+                    </div>
+                    <div class="nav navbar-text " style="width: 48px; height: 48px; ">
+
+                        <img src="../img/assets/LURDINHA-HEAD.png" alt="" class="menu-image"  style="width: 100%; height: 100%; "/>
+                    </div>
+
+                    <div class="nav navbar-text progress" style="width: 100px; margin-top:10px">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="70"
+                             aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                            70%
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </header>
 
         <button class="image share"></button>
 
-        <section id="home" class="hidden">
-            <div class="panel left">
+        <section id="home" class="center hidden">
+            <div class="panel center">
                 <div id="welcome">
                     <h1>Welcome <span class="first_name">...</span></h1>
-                    <img class="profile" src="images/profile.png" />
+                    <img class="profile" src="img/profile.png" />
                     <ul class="stats">
-                        <li><img src="images/coin40.png" alt="Coins" /> <span class="me coins">...</span></li>
-                        <li><img src="images/bomb40.png" alt="Bombs" /> <span class="me bombs">...</span></li>
+                        <li><img src="img/coin40.png" alt="Coins" /> <span class="me coins">...</span></li>
+                        <li><img src="img/bomb40.png" alt="Bombs" /> <span class="me bombs">...</span></li>
                     </ul>
                 </div>
                 <div id="menu">
-                    <button class="image play"></button>
-                    <button class="image challenge"></button>
-                    <button class="image leaderboard"></button>
+ 
+                    <button class="image play">Iniciar</button> 
+                    <button class="image continue">Continuar</button>
+                    <button class="image tutorial">Tutorial</button>
+                    <button class="image config">Configurações</button>
+                    <button class="image community">Ranking / Comunidade</button>
+                    <button class="image history">História</button>
+                    <button class="image credits">Créditos</button>
+                    <button class="image exit">Sair / Salvar</button>
+                    <button class="image challenge hidden"></button>
+                    <button class="image leaderboard hidden"></button>
                 </div>
             </div>
             <div class="panel right hidden" id="leaderboard">
@@ -243,7 +255,7 @@
                     <ul class="scrollable_list leaderboard">
                         <li class="loading">Loading...</li>
                         <li class="template">
-                            <img src="images/profile.png" class="profile small" />
+                            <img src="img/profile.png" class="profile small" />
                             <div class="namecontainer">
                                 <span class="rank">1</span>. <span class="name">Ali</span>
                             </div>
@@ -269,14 +281,14 @@
                     <ul class="scrollable_list friendselector friends">
                         <li class="loading">Loading...</li>
                         <li class="template">
-                            <img src="images/profile.png" class="profile small" />
+                            <img src="img/profile.png" class="profile small" />
                             <span class="name">...</span>
                         </li>
                     </ul>
                     <ul class="scrollable_list friendselector invitable_friends">
                         <li class="loading">Loading...</li>
                         <li class="template">
-                            <img src="images/profile.png" class="profile small" />
+                            <img src="img/profile.png" class="profile small" />
                             <span class="name">...</span>
                         </li>
                     </ul>
@@ -293,7 +305,7 @@
             </div>
             <div id="gamestats">
                 <div class="message">
-                    <img class="profile" src="images/profile.png" />
+                    <img class="profile" src="img/profile.png" />
                     <p>Smash <span class="name">...</span></p>
                 </div>
                 <div class="score">
@@ -306,7 +318,7 @@
 
         <section id="gameover" class="hidden">
             <h1>Game Over!</h1>
-            <img src="images/profile.png" class="profile" />
+            <img src="img/profile.png" class="profile" />
             <div class="stats">
                 <p>You smashed <span class="name">...</span> <span class="score">...</span> times and collected <span class="coins">...</span> <span class="coins_plurality">coins</span>!</p>
             </div>
@@ -344,7 +356,6 @@
                 "hideEasing": "linear",
                 "showMethod": "fadeIn",
                 "hideMethod": "fadeOut",
-              
             }
             var uMatch = navigator.userAgent.match(/Chrome\/(.*)$/);
             var ffVersion;

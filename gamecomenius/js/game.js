@@ -302,7 +302,7 @@ function spawnEntity(forceFriendsOnly) {
   if (entityType < 0.6) {
      newEntity.init(gChallenger.picture, true);
   } else if(entityType < 0.7 ) {
-    newEntity.init('images/coin64.png', false);
+    newEntity.init('img/coin64.png', false);
     newEntity.isCoin = true;
   } else {
     var nCelebToSpawn = Math.floor(getRandom(0, 10));

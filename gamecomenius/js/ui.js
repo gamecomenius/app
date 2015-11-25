@@ -166,7 +166,7 @@ function onGameEnd(gameState) {
 function showStage() {
     $('section').addClass('hidden');
     $('#stage').removeClass('hidden');
-
+    $('header').removeClass('hidden');
 }
 
 function showHome() {
