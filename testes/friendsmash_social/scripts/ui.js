@@ -145,6 +145,7 @@ function showStage() {
 function showHome() {
   $('section').addClass('hidden');
   $('#home').removeClass('hidden');
+  $('header').addClass('hidden');
 }
 
 function onChallenge() {

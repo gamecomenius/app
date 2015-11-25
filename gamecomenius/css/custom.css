@@ -1,8 +1,10 @@
-html {
+html,
+body {
   width: 100%;
   height: 100%;
+  margin: 0;
 }
-body {
+.body-bg {
   color: #f1dfcc;
   background: #1c1714 url('../img/CAPA.gif') center center no-repeat;
   background-size: cover;

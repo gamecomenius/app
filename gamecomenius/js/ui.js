@@ -45,7 +45,7 @@ function renderWelcome() {
     var welcome = $('#welcome');
     welcome.find('.first_name').html(friendCache.me.first_name);
     welcome.find('.profile').attr('src', friendCache.me.picture.data.url);
-
+    $('body').removeClass('hidden');
 //.........
     localStorage.setItem("gamecomenius.com.profile", JSON.stringify(friendCache));
     var profile = JSON.parse(localStorage.getItem('gamecomenius.com.profile')) || [];
@@ -167,11 +167,14 @@ function showStage() {
     $('section').addClass('hidden');
     $('#stage').removeClass('hidden');
     $('header').removeClass('hidden');
+    $('body').addClass('cidade');
 }
 
 function showHome() {
     $('section').addClass('hidden');
     $('#home').removeClass('hidden');
+     $('header').addClass('hidden');
+     $('body').removeClass('cidade');
 }
 
 function onChallenge() {

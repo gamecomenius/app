@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="body-bg">
     <head>
         <title>Game Comenius!</title>
 
@@ -33,7 +33,7 @@
     <!--[if IE]><script src="scripts/excanvas.js"></script><![endif]-->
     </head>
 
-    <body>
+    <body class="body-bg cidade hidden">
         <div id="fb-root"></div>
 
         <header class="hidden">
